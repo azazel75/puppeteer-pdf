@@ -5,7 +5,7 @@ const cli = require("commander");
 const fileUrl = require("file-url");
 const fs = require("fs");
 const isUrl = require("is-url");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
 
 cli
   .version("1.2.0")
@@ -66,6 +66,11 @@ cli
     "waitUntil accepts choices load, domcontentloaded, networkidle0, networkidle2. Defaults to 'networkidle2'.",
     "networkidle2"
   )
+  .option(
+    "-ep, --executablePath [path to executable]",
+    "A path to the chrome executable. Defaults to 'chromium'.",
+    "chromium"
+  )
   .action(function(required, optional) {
     // TODO: Implement required arguments validation
   })
@@ -103,7 +108,8 @@ cli
     }
   });
 
-  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"],
+                                           executablePath: options.executablePath });
   const page = await browser.newPage();
 
   // Get URL / file path from first argument
